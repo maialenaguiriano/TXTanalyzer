@@ -76,7 +76,7 @@ from TXTanalyzer import TXTanalyzer, TXTsummarizer
 analyzer = TXTanalyzer("example.txt")
 
 # Perform text analysis using TXTanalyzer's functions
-text = analyzer.print_text()
+analyzer.print_text()
 sentences = analyzer.sentence_splitting()
 statistics = analyzer.word_count()
 word_frequencies = analyzer.word_freq()
@@ -87,7 +87,7 @@ sentiment_analysis = analyzer.sia()
 summarizer = TXTsummarizer("example.txt")
 
 # Get the generated summary
-summary = summarizer.text
+summarizer.print_text()
 
 # Perform additional analysis on the generated summary using TXTanalyzer's functions
 summary_sentences = summarizer.sentence_splitting()
@@ -99,6 +99,6 @@ summary_sentiment_analysis = summarizer.sia()
 
 ## Contributing <a name="contributing"></a>
 
-If you would like to contribute to the development of the TXTanalyzer library or report issues, please visit the GitHub repository [here](https://github.com/your-repo).
+If you would like to contribute to the development of the TXTanalyzer library or report issues, please visit the GitHub repository [here](https://github.com/maialenaguiriano/TXTanalyzer).
 
 Enjoy analyzing and summarizing your text with TXTanalyzer!

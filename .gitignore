@@ -3,3 +3,6 @@ docs/_static
 docs/_templates
 Makefile
 make.bat
+.pypirc
+dist/*
+TXTanalyzer.egg-info/*

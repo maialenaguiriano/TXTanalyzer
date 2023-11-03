@@ -1,6 +1,6 @@
 # TXTanalyzer Library
 
-The TXTanalyzer library is a tool designed to perform basic text analysis on .txt files. It offers a range of utilities for text analysis, including word counting, sentence splitting, sentiment analysis, and word cloud generation. The library is built using various Python packages such as spaCy, NLTK, and WordCloud, to enhance the quality of the analysis.
+ TXTanalyzer is a tool designed to perform basic text analysis on .txt files. It offers a range of utilities for text analysis, including word counting, sentence splitting, sentiment analysis, and word cloud generation. The library is built using various Python libraries such as spaCy, NLTK, and WordCloud, to enhance the quality of the analysis.
 
 ## Table of Contents
 1. [Installation](#installation)

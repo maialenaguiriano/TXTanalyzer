@@ -6,3 +6,5 @@ make.bat
 .pypirc
 dist/*
 TXTanalyzer.egg-info/*
+setup.cfg
+setup.py

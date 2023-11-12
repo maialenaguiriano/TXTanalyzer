@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TXTanalyzer.TXTsummarizer &mdash; documentación de TXTanalyzer - 0.1</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=5ba375e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> TXTanalyzer
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">TXTanalyzer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TXTanalyzer</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">TXTanalyzer.TXTsummarizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para TXTanalyzer.TXTsummarizer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">nltk</span><span class="o">,</span> <span class="nn">spacy</span><span class="o">,</span> <span class="nn">spacy.cli</span><span class="o">,</span> <span class="nn">string</span><span class="o">,</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span><span class="o">,</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">nltk</span> <span class="kn">import</span> <span class="n">sent_tokenize</span><span class="p">,</span> <span class="n">word_tokenize</span><span class="p">,</span> <span class="n">PorterStemmer</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
+<span class="kn">from</span> <span class="nn">nltk.sentiment</span> <span class="kn">import</span> <span class="n">SentimentIntensityAnalyzer</span>
+<span class="kn">from</span> <span class="nn">wordcloud</span> <span class="kn">import</span> <span class="n">WordCloud</span>
+<span class="kn">from</span> <span class="nn">TXTanalyzer</span> <span class="kn">import</span> <span class="n">TXTanalyzer</span>
+
+<div class="viewcode-block" id="TXTsummarizer"><a class="viewcode-back" href="../../TXTanalyzer.html#TXTanalyzer.TXTsummarizer.TXTsummarizer">[documentos]</a><span class="k">class</span> <span class="nc">TXTsummarizer</span><span class="p">(</span><span class="n">TXTanalyzer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt_file_path</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor de la clase. Realiza el procesamiento y generación de un resumen a partir de un archivo de texto.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            txt_file_path (str): La ruta al archivo de texto a procesar y resumir.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Se lanza una excepción si el archivo está vacío.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">txt_file_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">txt_file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;El fichero no puede estar vacío. Debe contener algún tipo de texto.&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">summ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__procesar_texto</span><span class="p">()</span>
+        <span class="c1"># 1. Tokenizar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sentences</span> <span class="o">=</span> <span class="n">sent_tokenize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summ</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_documents</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sentences</span><span class="p">)</span>
+        <span class="c1"># 2. Crear matriz de frecuencias</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freq_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_frequency_matrix</span><span class="p">()</span>
+        <span class="c1"># 3. Calcular TermFrequency y generar matriz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tf_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_tf_matrix</span><span class="p">()</span>
+        <span class="c1"># 4. Porcentaje de aparicion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count_doc_per_words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_documents_per_words</span><span class="p">()</span>
+        <span class="c1"># 5. Calcular IDF y generar matriz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idf_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_idf_matrix</span><span class="p">()</span>
+        <span class="c1"># 6. Calcular TF*IDF y generar matriz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tf_idf_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_tf_idf_matrix</span><span class="p">()</span>
+        <span class="c1"># 7. Puntuar frases</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sentenceValue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__score_sentences</span><span class="p">()</span>
+        <span class="c1"># 8. Marcar limite</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__find_average_score</span><span class="p">()</span>
+        <span class="c1"># 9. Generar resumen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generate_summary</span><span class="p">()</span>
+        <span class="c1"># Guardar resumen en la variable text para aplicar las funciones de TXTanalyzer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span>
+
+    <span class="k">def</span> <span class="nf">__procesar_texto</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Procesa el texto eliminando saltos de línea, signos de interrogación, signos de exclamación y viñetas,</span>
+<span class="sd">        y realiza una limpieza adicional eliminando espacios duplicados.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: El texto procesado.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">summ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;¿&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">summ</span> <span class="o">=</span> <span class="n">summ</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;•&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">summ</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">summ</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">summ</span>
+    
+    <span class="k">def</span> <span class="nf">__create_frequency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crea una matriz de frecuencia que asocia las palabras en las oraciones del texto con su frecuencia de aparición.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Un diccionario que contiene las frecuencias de las palabras en las oraciones del texto.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">frequency_matrix</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">stopWords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s2">&quot;spanish&quot;</span><span class="p">))</span>
+        <span class="n">ps</span> <span class="o">=</span> <span class="n">PorterStemmer</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
+            <span class="n">freq_table</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">words</span> <span class="o">=</span> <span class="n">word_tokenize</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">stopWords</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">freq_table</span><span class="p">:</span>
+                    <span class="n">freq_table</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">freq_table</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">frequency_matrix</span><span class="p">[</span><span class="n">sent</span><span class="p">[:</span><span class="mi">15</span><span class="p">]]</span> <span class="o">=</span> <span class="n">freq_table</span>
+        <span class="k">return</span> <span class="n">frequency_matrix</span>
+    
+    <span class="k">def</span> <span class="nf">__create_tf_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crea una matriz TF (Frecuencia de Términos) que representa la frecuencia relativa de las palabras en las oraciones.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Un diccionario que contiene la matriz TF del texto.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tf_matrix</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sent</span><span class="p">,</span> <span class="n">f_table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_matrix</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">tf_table</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">count_words_in_sentence</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">f_table</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">f_table</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">tf_table</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span> <span class="o">/</span> <span class="n">count_words_in_sentence</span>
+
+            <span class="n">tf_matrix</span><span class="p">[</span><span class="n">sent</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf_table</span>
+        <span class="k">return</span> <span class="n">tf_matrix</span>
+    
+    <span class="k">def</span> <span class="nf">__create_documents_per_words</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crea una tabla que asocia las palabras con la cantidad de documentos en los que aparecen.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Un diccionario que contiene la cantidad de documentos en los que aparece cada palabra.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">word_per_doc_table</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sent</span><span class="p">,</span> <span class="n">f_table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_matrix</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">f_table</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">word_per_doc_table</span><span class="p">:</span>
+                    <span class="n">word_per_doc_table</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">word_per_doc_table</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">word_per_doc_table</span>
+    
+    <span class="k">def</span> <span class="nf">__create_idf_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crea una matriz IDF (Frecuencia Inversa de Documentos) que representa el valor IDF de cada palabra en el texto.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Un diccionario que contiene la matriz IDF del texto.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idf_matrix</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sent</span><span class="p">,</span> <span class="n">f_table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_matrix</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">idf_table</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">f_table</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">idf_table</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_documents</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_doc_per_words</span><span class="p">[</span><span class="n">word</span><span class="p">]))</span>
+            <span class="n">idf_matrix</span><span class="p">[</span><span class="n">sent</span><span class="p">]</span> <span class="o">=</span> <span class="n">idf_table</span>
+        <span class="k">return</span> <span class="n">idf_matrix</span>
+
+    <span class="k">def</span> <span class="nf">__create_tf_idf_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crea una matriz TF-IDF que representa el producto de la matriz TF (Frecuencia de Términos) y la matriz IDF</span>
+<span class="sd">        (Frecuencia Inversa de Documentos) para cada palabra en el texto.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Un diccionario que contiene la matriz TF-IDF del texto.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tf_idf_matrix</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">sent1</span><span class="p">,</span> <span class="n">f_table1</span><span class="p">),</span> <span class="p">(</span><span class="n">sent2</span><span class="p">,</span> <span class="n">f_table2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_matrix</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">idf_matrix</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">tf_idf_table</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">word1</span><span class="p">,</span> <span class="n">value1</span><span class="p">),</span> <span class="p">(</span><span class="n">word2</span><span class="p">,</span> <span class="n">value2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">f_table1</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">f_table2</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>  <span class="c1"># here, keys are the same in both the table</span>
+                <span class="n">tf_idf_table</span><span class="p">[</span><span class="n">word1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value1</span> <span class="o">*</span> <span class="n">value2</span><span class="p">)</span>
+            <span class="n">tf_idf_matrix</span><span class="p">[</span><span class="n">sent1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf_idf_table</span>
+        <span class="k">return</span> <span class="n">tf_idf_matrix</span>
+
+    <span class="k">def</span> <span class="nf">__score_sentences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evalúa la puntuación de cada oración en función de la TF-IDF de sus palabras. El algoritmo básico consiste en sumar la frecuencia TF-IDF de cada palabra no vacía en una oración y</span>
+<span class="sd">        dividirla por el número total de palabras en la oración.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Un diccionario que asocia cada oración con su puntuación.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sentenceValue</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sent</span><span class="p">,</span> <span class="n">f_table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_idf_matrix</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">total_score_per_sentence</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">count_words_in_sentence</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">f_table</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">f_table</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">total_score_per_sentence</span> <span class="o">+=</span> <span class="n">score</span>
+            <span class="n">sentenceValue</span><span class="p">[</span><span class="n">sent</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_score_per_sentence</span> <span class="o">/</span> <span class="n">count_words_in_sentence</span>
+        <span class="k">return</span> <span class="n">sentenceValue</span>
+    
+    <span class="k">def</span> <span class="nf">__find_average_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calcula el puntaje promedio a partir del diccionario de valores de las oraciones.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: El puntaje promedio de las oraciones.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sumValues</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sentenceValue</span><span class="p">:</span>
+            <span class="n">sumValues</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sentenceValue</span><span class="p">[</span><span class="n">entry</span><span class="p">]</span>
+        <span class="c1"># Average value of a sentence from original summary_text</span>
+        <span class="n">average</span> <span class="o">=</span> <span class="p">(</span><span class="n">sumValues</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sentenceValue</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">average</span>
+    
+    <span class="k">def</span> <span class="nf">__generate_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Genera un resumen a partir de las oraciones del texto en función de sus puntuaciones.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Un resumen generado a partir de las oraciones seleccionadas.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sentence_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sentence</span><span class="p">[:</span><span class="mi">15</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sentenceValue</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sentenceValue</span><span class="p">[</span><span class="n">sentence</span><span class="p">[:</span><span class="mi">15</span><span class="p">]]</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">):</span>
+                <span class="n">summary</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">sentence</span>
+                <span class="n">sentence_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">summary</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2023, Unai Alaña, Maialen Aguiriano.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

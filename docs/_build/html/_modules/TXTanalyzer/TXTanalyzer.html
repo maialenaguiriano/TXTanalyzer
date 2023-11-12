@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TXTanalyzer.TXTanalyzer &mdash; documentación de TXTanalyzer - 0.1</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=5ba375e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> TXTanalyzer
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">TXTanalyzer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TXTanalyzer</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">TXTanalyzer.TXTanalyzer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para TXTanalyzer.TXTanalyzer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">nltk</span><span class="o">,</span> <span class="nn">spacy</span><span class="o">,</span> <span class="nn">spacy.cli</span><span class="o">,</span> <span class="nn">string</span><span class="o">,</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span><span class="o">,</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">nltk</span> <span class="kn">import</span> <span class="n">sent_tokenize</span><span class="p">,</span> <span class="n">word_tokenize</span><span class="p">,</span> <span class="n">PorterStemmer</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
+<span class="kn">from</span> <span class="nn">nltk.sentiment</span> <span class="kn">import</span> <span class="n">SentimentIntensityAnalyzer</span>
+<span class="kn">from</span> <span class="nn">wordcloud</span> <span class="kn">import</span> <span class="n">WordCloud</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Librería de análisis de texto.</span>
+<span class="sd">Es una librería generada para realizar un análisis sencillo de archivos .txt</span>
+<span class="sd">Facilita el análisis de textos a través de diversas herramientas y facilidades, como el conteo de palabras, la división de oraciones, el análisis de sentimientos y más.</span>
+<span class="sd">Se han utilizado diferentes librerías como spaCy o nltk para facilitar el desarrollo de la herramienta y mejorar la calidad de los resultados.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TXTanalyzer"><a class="viewcode-back" href="../../TXTanalyzer.html#TXTanalyzer.TXTanalyzer.TXTanalyzer">[documentos]</a><span class="k">class</span> <span class="nc">TXTanalyzer</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt_file_path</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor de la clase. Lee el contenido de un archivo de texto especificado y lo almacena en el objeto.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            txt_file_path (str): La ruta al archivo de texto a leer.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Se lanza una excepción si el archivo está vacío.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">txt_file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;El fichero no puede estar vacío. Debe contener algún tipo de texto.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TXTanalyzer.read_file"><a class="viewcode-back" href="../../TXTanalyzer.html#TXTanalyzer.TXTanalyzer.TXTanalyzer.read_file">[documentos]</a>    <span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt_file_path</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lee el contenido de un archivo de texto y lo devuelve como una cadena de texto.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            txt_file_path (str): La ruta al archivo de texto a leer.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: El contenido del archivo como una cadena de texto.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Se lanza una excepción si el archivo no tiene una extensión .txt</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txt_file_path</span> <span class="o">=</span> <span class="n">txt_file_path</span>
+        <span class="k">if</span> <span class="n">txt_file_path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.txt&#39;</span><span class="p">):</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">txt_file_path</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;El fichero debe tener extensión .txt&quot;</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="TXTanalyzer.print_text"><a class="viewcode-back" href="../../TXTanalyzer.html#TXTanalyzer.TXTanalyzer.TXTanalyzer.print_text">[documentos]</a>    <span class="k">def</span> <span class="nf">print_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Devuelve el texto almacenado en el objeto.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: El texto almacenado en el objeto como una cadena de texto.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span></div>
+    
+<div class="viewcode-block" id="TXTanalyzer.sentence_splitting"><a class="viewcode-back" href="../../TXTanalyzer.html#TXTanalyzer.TXTanalyzer.TXTanalyzer.sentence_splitting">[documentos]</a>    <span class="k">def</span> <span class="nf">sentence_splitting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Divide el texto en frases utilizando el modelo de lenguaje &quot;en_core_web_sm&quot; de SpaCy.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: Una lista de frases obtenidas a partir del texto.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;en_core_web_sm&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="c1"># Model not found, download it</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Descargando modelo de separación de frases...&quot;</span><span class="p">)</span>
+            <span class="n">spacy</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;en_core_web_sm&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;en_core_web_sm&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">frases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">sent</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">frases</span><span class="o">.</span><span class="n">sents</span><span class="p">]</span></div>
+    
+    <span class="k">def</span> <span class="nf">__remove_stopwords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Elimina las palabras vacías (stopwords) y signos de puntuación del texto.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: Una lista de palabras del texto después de eliminar stopwords y puntuación.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cleaned_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">string</span><span class="o">.</span><span class="n">punctuation</span><span class="p">))</span>
+        <span class="n">all_words</span> <span class="o">=</span> <span class="n">cleaned_text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">stop_words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;spanish&#39;</span><span class="p">))</span>
+        <span class="n">filtered_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;¿&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">all_words</span> <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop_words</span><span class="p">]</span> <span class="c1"># el carácter &#39;¿&#39; no lo detecta la librería string por lo que aprovechamos para eliminarlo ahora</span>
+        <span class="k">return</span> <span class="n">filtered_words</span>
+    
+<div class="viewcode-block" id="TXTanalyzer.word_count"><a class="viewcode-back" href="../../TXTanalyzer.html#TXTanalyzer.TXTanalyzer.TXTanalyzer.word_count">[documentos]</a>    <span class="k">def</span> <span class="nf">word_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Procesa el texto para calcular estadísticas, incluyendo el recuento de palabras, el recuento de palabras únicas y</span>
+<span class="sd">        el recuento total de caracteres. Las &#39;stopwords&#39; son previamente eliminadas.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Un string que contiene las estadísticas de procesamiento del texto.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__remove_stopwords</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="c1"># Model not found, download it</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Descargando modelo para eliminar stopwords...&quot;</span><span class="p">)</span>
+            <span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;stopwords&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__remove_stopwords</span><span class="p">()</span>
+        <span class="n">total_chars</span> <span class="o">=</span> <span class="p">[</span><span class="n">char</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">]</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Word count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">Unique word count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">))</span><span class="si">}</span><span class="se">\n</span><span class="s2">Total characters: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">total_chars</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span></div>
+    
+<div class="viewcode-block" id="TXTanalyzer.word_freq"><a class="viewcode-back" href="../../TXTanalyzer.html#TXTanalyzer.TXTanalyzer.TXTanalyzer.word_freq">[documentos]</a>    <span class="k">def</span> <span class="nf">word_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calcula la frecuencia de las palabras en el texto y devuelve un diccionario que asocia cada palabra</span>
+<span class="sd">        con su frecuencia.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Un diccionario que contiene las palabras como claves y sus frecuencias como valores.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_count</span><span class="p">()</span>
+        <span class="n">word_frequency</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">:</span>
+            <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">word_frequency</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">word_frequency</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">word_frequency</span></div>
+    
+<div class="viewcode-block" id="TXTanalyzer.wordcloud"><a class="viewcode-back" href="../../TXTanalyzer.html#TXTanalyzer.TXTanalyzer.TXTanalyzer.wordcloud">[documentos]</a>    <span class="k">def</span> <span class="nf">wordcloud</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crea y muestra una representación de nube de palabras basada en la frecuencia de las palabras en el texto.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wordcloud</span> <span class="o">=</span> <span class="n">WordCloud</span><span class="p">()</span><span class="o">.</span><span class="n">generate_from_frequencies</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_freq</span><span class="p">())</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wordcloud</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="TXTanalyzer.sia"><a class="viewcode-back" href="../../TXTanalyzer.html#TXTanalyzer.TXTanalyzer.TXTanalyzer.sia">[documentos]</a>    <span class="k">def</span> <span class="nf">sia</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Realiza un análisis de sentimiento (SIA - Sentiment Intensity Analyzer) en el texto y devuelve los resultados.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Un string que contiene la negatividad, neutralidad y positividad del texto.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sia</span> <span class="o">=</span> <span class="n">SentimentIntensityAnalyzer</span><span class="p">()</span><span class="o">.</span><span class="n">polarity_scores</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">neg</span><span class="p">,</span> <span class="n">neu</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">sia</span><span class="p">[</span><span class="s1">&#39;neg&#39;</span><span class="p">],</span> <span class="n">sia</span><span class="p">[</span><span class="s1">&#39;neu&#39;</span><span class="p">],</span> <span class="n">sia</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Negativity: </span><span class="si">{</span><span class="n">neg</span><span class="si">}</span><span class="se">\n</span><span class="s2">Neutrality: </span><span class="si">{</span><span class="n">neu</span><span class="si">}</span><span class="se">\n</span><span class="s2">Positivity: </span><span class="si">{</span><span class="n">pos</span><span class="si">}</span><span class="s2">&quot;</span></div></div>
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2023, Unai Alaña, Maialen Aguiriano.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
